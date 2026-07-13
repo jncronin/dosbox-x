@@ -270,8 +270,8 @@ if test x$enable_optimize != xno; then
 	    CFLAGS="$CFLAGS -Os"
 	    CXXFLAGS="$CXXFLAGS -Os"
     else
-	    CFLAGS="$CFLAGS -O2"
-	    CXXFLAGS="$CXXFLAGS -O2"
+	    CFLAGS="$CFLAGS -Ofast -DFLOAT_APPROX=1"
+	    CXXFLAGS="$CXXFLAGS -Ofast -DFLOAT_APPROX=1"
     fi
 fi
 
