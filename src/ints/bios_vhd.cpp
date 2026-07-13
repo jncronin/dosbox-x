@@ -23,6 +23,9 @@
 #if defined(__linux__)
 #include <linux/limits.h>
 #endif
+#if defined(__GAMEKID__)
+#include <limits.h>
+#endif
 #include "dosbox.h"
 #include "callback.h"
 #include "bios.h"

@@ -878,6 +878,46 @@ int WAI_PREFIX(getModulePath)(char* out, int capacity, int* dirname_length) {
     return len;
 }
 
+#elif defined(__GAMEKID__)
+#include <dlfcn.h>
+#include <string.h>
+#include <limits.h>
+
+WAI_FUNCSPEC
+int WAI_PREFIX(getExecutablePath)(char* out, int capacity, int* dirname_length)
+{
+  char buf[PATH_MAX];
+  
+  void *hnd = dlopen(NULL, 0);
+  if(!hnd)
+  {
+    return -1;
+  }
+
+  if(dlinfo(hnd, RTLD_DI_ORIGIN, buf) != 0)
+  {
+    return -1;
+  }
+
+  if(out)
+  {
+    strncpy(out, buf, capacity);
+  }
+
+  if(dirname_length)
+  {
+    *dirname_length = strlen(buf);
+  }
+
+  return 0;
+}
+
+WAI_FUNCSPEC
+int WAI_PREFIX(getModulePath)(char* out, int capacity, int* dirname_length)
+{
+  return wai_getExecutablePath(out, capacity, dirname_length);
+}
+
 #else
 
 #error unsupported platform

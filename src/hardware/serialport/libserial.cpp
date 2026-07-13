@@ -728,3 +728,44 @@ bool SERIAL_setCommParameters(COMPORT port,
 	return true;
 }
 #endif
+
+#ifdef __GAMEKID__
+
+bool SERIAL_open(const char* portname, COMPORT* port)
+{
+    return false;
+}
+
+void SERIAL_getErrorString(char* buffer, size_t length) {
+}
+
+void SERIAL_close(COMPORT port) {
+}
+
+bool SERIAL_sendchar(COMPORT port, char data) {
+    return false;
+}
+
+void SERIAL_setBREAK(COMPORT port, bool value) {
+}
+
+int SERIAL_getextchar(COMPORT port) {
+    return 0;
+}
+
+int SERIAL_getmodemstatus(COMPORT port) {
+    return 0;
+}
+
+void SERIAL_setDTR(COMPORT port, bool value) {
+}
+
+void SERIAL_setRTS(COMPORT port, bool value) {
+}
+
+bool SERIAL_setCommParameters(COMPORT port,
+			int baudrate, char parity, int stopbits, int length) {
+    return false;
+}
+
+#endif
