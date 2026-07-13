@@ -152,7 +152,7 @@ private:
         if (renderInThread) {
             while (renderPos == playPos) {
                 SDL_LockMutex(lock);
-                SDL_CondWait(framesInBufferChanged, lock);
+                SDL_CondWaitTimeout(framesInBufferChanged, lock, 250);
                 SDL_UnlockMutex(lock);
                 if (stopProcessing) return;
             }
@@ -195,7 +195,7 @@ private:
             Bitu framesToRender = samplesToRender >> 1;
             if ((framesToRender == 0) || ((framesToRender < minimumRenderFrames) && (renderPosSnap < playPosSnap))) {
                 SDL_LockMutex(lock);
-                SDL_CondWait(framesInBufferChanged, lock);
+                SDL_CondWaitTimeout(framesInBufferChanged, lock, 250);
                 SDL_UnlockMutex(lock);
             } else {
                 service->renderBit16s(audioBuffer + renderPosSnap, (MT32Emu::uint32_t)framesToRender);
