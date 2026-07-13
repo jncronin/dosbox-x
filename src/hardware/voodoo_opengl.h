@@ -30,6 +30,13 @@
 
 #if C_OPENGL
 
+#ifdef __GAMEKID__
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
+
 #include "voodoo_vogl.h"
 #include "voodoo_types.h"
 

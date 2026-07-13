@@ -26,6 +26,15 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "config.h"
+#if C_OPENGL
+#ifdef __GAMEKID__
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+#endif
+
 #ifdef WIN32
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN

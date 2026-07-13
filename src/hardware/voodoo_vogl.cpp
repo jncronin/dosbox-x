@@ -31,6 +31,12 @@
 
 #if C_OPENGL
 
+#ifdef __GAMEKID__
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
 #include "voodoo_vogl.h"
 
 /* NTS: This causes errors in Linux because MesaGL already defines these */
@@ -40,6 +46,7 @@ PFNGLMULTITEXCOORD4FARBPROC __glMultiTexCoord4fARB = NULL;
 PFNGLACTIVETEXTUREARBPROC __glActiveTextureARB = NULL;
 #endif
 
+#ifndef __GAMEKID__
 PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB = NULL;
 PFNGLSHADERSOURCEARBPROC glShaderSourceARB = NULL;
 PFNGLCOMPILESHADERARBPROC glCompileShaderARB = NULL;
@@ -61,7 +68,7 @@ PFNGLBLENDFUNCSEPARATEEXTPROC glBlendFuncSeparateEXT = NULL;
 PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT = NULL;
 PFNGLGETATTRIBLOCATIONARBPROC glGetAttribLocationARB = NULL;
 PFNGLVERTEXATTRIB1FARBPROC glVertexAttrib1fARB = NULL;
-
+#endif
 
 static int32_t opengl_version = -1;
 
@@ -150,6 +157,7 @@ void VOGL_InitVersion(void) {
 }
 
 void VOGL_ClearShaderFunctions(void) {
+#ifndef __GAMEKID__
 	glShaderSourceARB = NULL;
 	glCompileShaderARB = NULL;
 	glCreateProgramObjectARB = NULL;
@@ -166,6 +174,7 @@ void VOGL_ClearShaderFunctions(void) {
 	glDeleteObjectARB  = NULL;
 	glGetObjectParameterivARB = NULL;
 	glGetInfoLogARB = NULL;
+#endif
 }
 
 bool VOGL_Initialize(void) {
@@ -193,6 +202,7 @@ bool VOGL_Initialize(void) {
 	}
 #endif
 
+#ifndef __GAMEKID__
 	glBlendFuncSeparateEXT = (PFNGLBLENDFUNCSEPARATEEXTPROC)((uintptr_t)SDL_GL_GetProcAddress("glBlendFuncSeparateEXT"));
 	if (!glBlendFuncSeparateEXT) {
 		LOG_MSG("opengl: glBlendFuncSeparateEXT extension not supported");
@@ -204,12 +214,14 @@ bool VOGL_Initialize(void) {
 		LOG_MSG("opengl: glGenerateMipmapEXT extension not supported");
 		return false;
 	}
+#endif
 
 	if (VOGL_CheckFeature(VOGL_ATLEAST_V20)) {
 		const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
 		if (strstr(extensions, "GL_ARB_shader_objects") && strstr(extensions, "GL_ARB_vertex_shader") &&
 			strstr(extensions, "GL_ARB_fragment_shader")) {
 
+#ifndef __GAMEKID__
 			glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC)((uintptr_t)SDL_GL_GetProcAddress("glCreateShaderObjectARB"));
 			if (!glCreateShaderObjectARB) {
 				LOG_MSG("opengl: shader extensions not supported. Using fixed pipeline");
@@ -273,12 +285,15 @@ bool VOGL_Initialize(void) {
 					glUniform1iARB && glUniform1fARB && glUniform2fARB && glUniform3fARB &&
 					glUniform4fARB && glGetUniformLocationARB && glDetachObjectARB &&
 					glDeleteObjectARB && glGetObjectParameterivARB && glGetInfoLogARB) {
+#endif
 						VOGL_FlagFeature(VOGL_HAS_SHADERS);
+#ifndef __GAMEKID__
 //						LOG_MSG("opengl: shader functionality enabled");
 				} else {
 					VOGL_ClearShaderFunctions();
 				}
 			}
+#endif
 		}
 	}
 

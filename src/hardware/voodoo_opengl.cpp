@@ -40,6 +40,13 @@ bool Voodoo_OGL_Active() {
 
 #if C_OPENGL
 
+#ifdef __GAMEKID__
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
+
 #if defined(_MSC_VER)
 # pragma warning(disable:4244) /* const fmath::local::uint64_t to double possible loss of data */
 #endif
@@ -508,7 +515,9 @@ void ogl_cache_texture(const poly_extra_data *extra, ogl_texture_data *td) {
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,TEXMODE_CLAMP_S(TEXMODE)?GL_CLAMP_TO_EDGE:GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,TEXMODE_CLAMP_T(TEXMODE)?GL_CLAMP_TO_EDGE:GL_REPEAT);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, smax, tmax, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, texrgbp);
+#ifndef __GAMEKID__
 				extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT;
+#endif
 				glGenerateMipmapEXT(GL_TEXTURE_2D);
 				if ((TEXMODE_FORMAT(v->tmu[j].reg[textureMode].u)==0x05) || (TEXMODE_FORMAT(v->tmu[j].reg[textureMode].u)==0x0e)) {
 					UINT32 palsum = calculate_palsum(j);

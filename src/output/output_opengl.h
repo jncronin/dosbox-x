@@ -31,13 +31,14 @@ typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access)
 typedef GLboolean(APIENTRYP PFNGLUNMAPBUFFERARBPROC) (GLenum target);
 #endif
 
+#ifndef __GAMEKID__
 extern PFNGLGENBUFFERSARBPROC glGenBuffersARB;
 extern PFNGLBINDBUFFERARBPROC glBindBufferARB;
 extern PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB;
 extern PFNGLBUFFERDATAARBPROC glBufferDataARB;
 extern PFNGLMAPBUFFERARBPROC glMapBufferARB;
 extern PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB;
-
+#endif
 
 /* Don't guard these with GL_VERSION_2_0 - Apple defines it but not these typedefs.
  * If they're already defined they should match these definitions, so no conflicts.

@@ -33,6 +33,7 @@ extern PFNGLMULTITEXCOORD4FVARBPROC __glMultiTexCoord4fvARB;
 # define glActiveTexture __glActiveTextureARB
 #endif
 
+#ifndef __GAMEKID__
 extern PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB;
 extern PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
 extern PFNGLCOMPILESHADERARBPROC glCompileShaderARB;
@@ -54,7 +55,7 @@ extern PFNGLBLENDFUNCSEPARATEEXTPROC glBlendFuncSeparateExt;
 extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapExt;
 extern PFNGLGETATTRIBLOCATIONARBPROC glGetAttribLocationARB;
 extern PFNGLVERTEXATTRIB1FARBPROC glVertexAttrib1fARB;
-
+#endif
 
 #define VOGL_ATLEAST_V20			0x00000001
 #define VOGL_ATLEAST_V21			0x00000002

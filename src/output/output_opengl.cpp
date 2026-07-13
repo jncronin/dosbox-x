@@ -4,6 +4,12 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
+#ifdef __GAMEKID__
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#endif
+
 #include <sys/types.h>
 #include <assert.h>
 #include <math.h>
@@ -36,12 +42,14 @@ extern Bitu currentWindowHeight;
 bool setSizeButNotResize();
 
 #if C_OPENGL
+#ifndef __GAMEKID__
 PFNGLGENBUFFERSARBPROC glGenBuffersARB = NULL;
 PFNGLBINDBUFFERARBPROC glBindBufferARB = NULL;
 PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;
 PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;
 PFNGLMAPBUFFERARBPROC glMapBufferARB = NULL;
 PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB = NULL;
+#endif
 
 /* Apple defines these functions in their GL header (as core functions)
  * so we can't use their names as function pointers. We can't link
@@ -73,6 +81,7 @@ PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = NULL;
 /* "using" is meant to hide identical names declared in outer scope
  * but is unreliable, so just redefine instead.
  */
+#ifndef __GAMEKID__
 #define glAttachShader            gl2::glAttachShader
 #define glCompileShader           gl2::glCompileShader
 #define glCreateProgram           gl2::glCreateProgram
@@ -92,6 +101,7 @@ PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = NULL;
 #define glUniform1i               gl2::glUniform1i
 #define glUseProgram              gl2::glUseProgram
 #define glVertexAttribPointer     gl2::glVertexAttribPointer
+#endif
 
 #if C_OPENGL && DOSBOXMENU_TYPE == DOSBOXMENU_SDLDRAW
 extern unsigned int SDLDrawGenFontTextureWidth;
@@ -352,11 +362,14 @@ void OUTPUT_OPENGL_Select( GLKind kind )
     GFX_SetResizeable(true);
     sdl.window = GFX_SetSDLWindowMode(640,400, SCREEN_OPENGL);
     if (sdl.window) {
+#ifndef __GAMEKID__
+        // this is duplicated from GFX_SetSDLWindowMode
         if(sdl_opengl.context) {
             SDL_GL_DeleteContext(sdl_opengl.context);
             sdl_opengl.context = nullptr;
         }
         sdl_opengl.context = SDL_GL_CreateContext(sdl.window);
+#endif
         sdl.surface = SDL_GetWindowSurface(sdl.window);
 
         LOG_MSG( "OpenGL Version : %s", glGetString( GL_VERSION ));
@@ -373,6 +386,7 @@ void OUTPUT_OPENGL_Select( GLKind kind )
         sdl_opengl.kind = kind;
         sdl.desktop.isperfect = kind == GLPerfect;
         sdl_opengl.program_object = 0;
+#ifndef __GAMEKID__
         glAttachShader = (PFNGLATTACHSHADERPROC)SDL_GL_GetProcAddress("glAttachShader");
         glCompileShader = (PFNGLCOMPILESHADERPROC)SDL_GL_GetProcAddress("glCompileShader");
         glCreateProgram = (PFNGLCREATEPROGRAMPROC)SDL_GL_GetProcAddress("glCreateProgram");
@@ -396,18 +410,23 @@ void OUTPUT_OPENGL_Select( GLKind kind )
             glEnableVertexAttribArray && glGetAttribLocation && glGetProgramiv && glGetProgramInfoLog && \
             glGetShaderiv && glGetShaderInfoLog && glGetUniformLocation && glLinkProgram && glShaderSource && \
             glUniform2f && glUniform1i && glUseProgram && glVertexAttribPointer);
+#else
+        sdl_opengl.use_shader = true;
+#endif
         if (sdl_opengl.use_shader) initgl = 2;
         sdl_opengl.buffer=0;
         sdl_opengl.framebuf = nullptr;
         sdl_opengl.texture=0;
         sdl_opengl.displaylist=0;
         glGetIntegerv (GL_MAX_TEXTURE_SIZE, &sdl_opengl.max_texsize);
+#ifndef __GAMEKID__
         glGenBuffersARB = (PFNGLGENBUFFERSARBPROC)SDL_GL_GetProcAddress("glGenBuffersARB");
         glBindBufferARB = (PFNGLBINDBUFFERARBPROC)SDL_GL_GetProcAddress("glBindBufferARB");
         glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC)SDL_GL_GetProcAddress("glDeleteBuffersARB");
         glBufferDataARB = (PFNGLBUFFERDATAARBPROC)SDL_GL_GetProcAddress("glBufferDataARB");
         glMapBufferARB = (PFNGLMAPBUFFERARBPROC)SDL_GL_GetProcAddress("glMapBufferARB");
         glUnmapBufferARB = (PFNGLUNMAPBUFFERARBPROC)SDL_GL_GetProcAddress("glUnmapBufferARB");
+#endif
         const char * gl_ext = (const char *)glGetString (GL_EXTENSIONS);
         if(gl_ext && *gl_ext){
             sdl_opengl.packed_pixel=(strstr(gl_ext,"EXT_packed_pixels") != NULL);
