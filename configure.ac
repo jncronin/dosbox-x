@@ -1392,7 +1392,7 @@ AH_TEMPLATE(C_FLUIDSYNTH,[Define to 1 to enable libfluidsynth MIDI synthesis])
 AC_ARG_ENABLE(libfluidsynth,AC_HELP_STRING([--disable-libfluidsynth],[Disable libfluidsynth support]),enable_libfluidsynth=$enableval,enable_libfluidsynth=yes)
 if test x$enable_libfluidsynth = xyes; then
     case "$host" in
-        *-*-linux*)
+        *-*-linux* | *-*-gkos*)
         if test x$have_fluidsynth_h = xyes; then
           have_fluidsynth_lib=yes
         fi
@@ -1401,6 +1401,12 @@ if test x$enable_libfluidsynth = xyes; then
     if test x$have_fluidsynth_lib = xyes -a x$have_fluidsynth_h = xyes ; then
       LIBS="$LIBS -lfluidsynth"
       AC_DEFINE(C_FLUIDSYNTH,1)
+
+      case "$host" in
+        *-*-gkos*)
+          LIBS="$LIBS -lglib-2.0 -lgthread-2.0"
+        ;;
+      esac
     else
       AC_MSG_WARN([libfluidsynth MIDI synthesis not available])
     fi
