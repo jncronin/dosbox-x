@@ -80,6 +80,10 @@
 #include "keyboard.h"
 #include "clockdomain.h"
 
+#ifdef __GAMEKID__
+#include <gk.h>
+#endif
+
 #if __APPLE__ && __MAC_OS_X_VERSION_MIN_REQUIRED < 101200
 /* FIX_ME: A workaround to avoid build error. Change version to 101300 if error occurs for Sierra (10.12) */
 struct __processor_model {
@@ -1127,6 +1131,10 @@ unsigned int BeepDuration() {
 
 void DOSBOX_RealInit() {
     DOSBoxMenu::item *item;
+
+#ifdef __GAMEKID__
+    GK_SetGoldenThread(0);
+#endif
 
     LOG(LOG_MISC,LOG_DEBUG)("DOSBOX-X RealInit: loading settings and initializing");
 
